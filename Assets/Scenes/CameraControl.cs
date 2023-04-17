@@ -11,22 +11,78 @@ public class CameraControl : MonoBehaviour
     private bool IsNeedMove = false;//是否需要移动
 
     public float ChangeSpeed = 10.0f;
-    public float maximum = 25;
-    public float minmum = 10;
-    
+    public float maximum = 32;
+    public float minmum = 15;
+    public float CameraSizeChanged = 0;
+    public float x = 0;
+    public float y = 0;
+
+
+    public Grid grid_; // Tilemap的Grid组件
 
     public void Start()
     {
         first.x = transform.position.x;
+        first.y = transform.position.y;
     }
-    
+
+    public void OnGUI()
+    {
+        if (Event.current.type == EventType.MouseDown)
+        {
+            first = Event.current.mousePosition;
+            //记录鼠标按下的位置
+        }
+        if (Event.current.type == EventType.MouseDrag)
+        {
+            //记录鼠标拖动的位置
+            second = Event.current.mousePosition;
+            Vector3 fir = Camera.main.ScreenToViewportPoint(new Vector3(first.x, first.y, -10));
+            Vector3 sec = Camera.main.ScreenToViewportPoint(new Vector3(second.x, second.y, -10));
+            vecPos = (sec - fir) * 50;
+            first = second;
+            IsNeedMove = true;
+
+
+        }
+        else
+        {
+            IsNeedMove = false;
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (Input.GetMouseButtonDown(0))
+        {
+            // 将鼠标点击的屏幕坐标转换为世界坐标
+            Vector3 wPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // 将世界坐标转换为瓦片坐标
+            Vector3Int cellPos = grid_.WorldToCell(wPos);
+            // 由于是2D, 所以手动将瓦片的Z坐标改为0, 实际项目可以先查看瓦片的Z坐标值.
+            cellPos.z = 0;
+            Debug.Log(cellPos);
+            Debug.Log(grid_.CellToWorld(cellPos));
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minmum, maximum);
             Camera.main.orthographicSize = Camera.main.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * ChangeSpeed;
         }
+        x = transform.position.x;
+        y = transform.position.y;
+        x = x - vecPos.x;//向量偏移
+        y = y + vecPos.y;
+        x = Mathf.Clamp(x, 15, 50);
+        y = Mathf.Clamp(y, 15 - Camera.main.orthographicSize/6 , 48 + Camera.main.orthographicSize / 12);
+        //y = Mathf.Clamp(y, 30-Camera.main.orthographicSize, 30+Camera.main.orthographicSize);
+        if (IsNeedMove == false)
+        {
+            return;
+        }
+        transform.position = new Vector3(x, y, -10);
     }
 }
+
