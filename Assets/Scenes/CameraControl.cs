@@ -11,8 +11,8 @@ public class CameraControl : MonoBehaviour
     private bool IsNeedMove = false;//是否需要移动
 
     public float ChangeSpeed = 10.0f;
-    public float maximum = 32;
-    public float minmum = 15;
+    public float maximum = 16;
+    public float minmum = 10;
     public float CameraSizeChanged = 0;
     public float x = 0;
     public float y = 0;
@@ -37,8 +37,8 @@ public class CameraControl : MonoBehaviour
         {
             //记录鼠标拖动的位置
             second = Event.current.mousePosition;
-            Vector3 fir = Camera.main.ScreenToViewportPoint(new Vector3(first.x, first.y, -10));
-            Vector3 sec = Camera.main.ScreenToViewportPoint(new Vector3(second.x, second.y, -10));
+            Vector3 fir = Camera.main.ScreenToViewportPoint(new Vector3(first.x, first.y, -1));
+            Vector3 sec = Camera.main.ScreenToViewportPoint(new Vector3(second.x, second.y, -1));
             vecPos = (sec - fir) * 50;
             first = second;
             IsNeedMove = true;
@@ -75,14 +75,14 @@ public class CameraControl : MonoBehaviour
         y = transform.position.y;
         x = x - vecPos.x;//向量偏移
         y = y + vecPos.y;
-        x = Mathf.Clamp(x, 15, 50);
-        y = Mathf.Clamp(y, 15 - Camera.main.orthographicSize/6 , 48 + Camera.main.orthographicSize / 12);
+        x = Mathf.Clamp(x, -10 - Camera.main.orthographicSize / 6, 10 + Camera.main.orthographicSize / 6);
+        y = Mathf.Clamp(y, -15 - Camera.main.orthographicSize/12 , 10 + Camera.main.orthographicSize / 12);
         //y = Mathf.Clamp(y, 30-Camera.main.orthographicSize, 30+Camera.main.orthographicSize);
         if (IsNeedMove == false)
         {
             return;
         }
-        transform.position = new Vector3(x, y, -10);
+        transform.position = new Vector3(x, y, -1);
     }
 }
 
