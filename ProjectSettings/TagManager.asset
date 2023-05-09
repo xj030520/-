@@ -44,3 +44,6 @@ TagManager:
   - name: mapdetail
     uniqueID: 4197263253
     locked: 0
+  - name: Army
+    uniqueID: 2028137981
+    locked: 0

@@ -12,7 +12,7 @@ public class CameraControl : MonoBehaviour
 
     public float ChangeSpeed = 10.0f;
     public float maximum = 16;
-    public float minmum = 10;
+    public float minmum = 7;
     public float CameraSizeChanged = 0;
     public float x = 0;
     public float y = 0;
@@ -63,8 +63,7 @@ public class CameraControl : MonoBehaviour
             Vector3Int cellPos = grid_.WorldToCell(wPos);
             // 由于是2D, 所以手动将瓦片的Z坐标改为0, 实际项目可以先查看瓦片的Z坐标值.
             cellPos.z = 0;
-            Debug.Log(cellPos);
-            Debug.Log(grid_.CellToWorld(cellPos));
+
         }
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
@@ -82,7 +81,7 @@ public class CameraControl : MonoBehaviour
         {
             return;
         }
-        transform.position = new Vector3(x, y, -1);
+        transform.position = new Vector3(x, y, -5);
     }
 }
 
